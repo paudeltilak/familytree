@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Scalable Collapsible Family Tree</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: sans-serif;
+  background:silver;
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+}
+
+rect.node-box {
+  fill: #cce5ff;
+  stroke: #333;
+  stroke-width: 1.5px;
+  rx: 6;
+  ry: 6;
+}
+
+text.node-text {
+  font-size: 12px;
+  fill: #222;
+}
+
+.link {
+  fill: none;
+  stroke: #555;
+  stroke-width: 1.5px;
+}
+</style>
+</head>
+<body>
+
+<svg id="tree"></svg>
+
+<script>
+// ======================
+// Sample Data (Inline)
+// ======================
+const data = {
+  "name": "सोमनाथ आत्रेय",
+  "children": [
+    {
+      "name": "रंगनाभ आत्रेय",
+      "children": [
+        {
+          "name": "पुरनाभ आत्रेय",
+          "children": [
+            {
+              "name": "फणिन्द्रनाभ आत्रेय",
+              "children": [
+                {
+                  "name": "प्रसरनाभ आत्रेय",
+                  "children": [
+                    {
+                      "name": "भीमदेव आत्रेय",
+                      "children": [
+                        {
+                          "name": "पूर्णदेव आत्रेय",
+                          "children": [
+                            {
+                              "name": "देवदेव आत्रेय",
+                              "children": [
+                                {
+                                  "name": "कुमारदेव आत्रेय",
+                                  "children": [
+                                    {
+                                      "name": "शक्तिदेव आत्रेय( महाराष्ट्रका राजा प्रतापसिंह राणाबाट भट्ट उपाधिका साथै अजमेर र चित्तौडको राज्य र छोरी समेत प्राप्त गरेका विद्वान व्यक्तित्व)",
+                                      "children": [
+                                        {
+                                          "name": "पृथ्वीदेव भट्ट",
+                                          "children": [
+                                            {
+                                              "name": "कुवेरदेव भट्ट(जोधपुर)",
+                                              "children": [
+                                                {
+                                                  "name": "उदयदेव भट्ट ( चित्तौडमा मुश्लिम आक्रमण भएकाले भागेर गढवालको श्रीनगर पुगेका)",
+                                                  "children": [
+                                                    {
+                                                      "name": "सदु भन्ने शुकदेव भट्ट सुदय भट्ट पनि भनिने",
+                                                      "children": [
+                                                        {
+                                                          "name": "राय भट्ट",
+                                                          "children": [
+                                                            {
+                                                              "name": "देवदत्त भट्ट",
+                                                              "children": [
+                                                                {
+                                                                  "name": "वत्सराज भट्ट",
+                                                                  "children": [
+                                                                    {
+                                                                      "name": "श्रीवत्सराज भट्ट",
+                                                                      "children": [
+                                                                        {
+                                                                          "name": "श्रीदेव भट्ट",
+                                                                          "children": [
+                                                                            {
+                                                                              "name": "श्री नन्द भट्ट",
+                                                                              "children": [
+                                                                                {
+                                                                                  "name": "श्रीराम पौडेल",
+                                                                                  "children": [
+                                                                                    {
+                                                                                      "name": "हरिदत्त पौडेल",
+                                                                                      "children": [
+                                                                                        {
+                                                                                          "name": "नन्दराम पौडेल",
+                                                                                          "children": [
+                                                                                            {
+                                                                                              "name": "सदाशिब(सदु) पौडेल",
+                                                                                              "children": [
+                                                                                                {
+                                                                                                  "name": "मोतिराज पौडेल",
+                                                                                                  "children": [
+                                                                                                    {
+                                                                                                      "name": "देवराज पौडेल",
+                                                                                                      "children": [
+                                                                                                        {
+                                                                                                          "name": "जयराज पौडेल",
+                                                                                                          "children": [
+                                                                                                            {
+                                                                                                              "name": "कालु पौडेल",
+                                                                                                              "children": [
+                                                                                                                {
+                                                                                                                  "name": "रतन पौडेल",
+                                                                                                                  "children": [
+                                                                                                                    {
+                                                                                                                      "name": "गणपति पौडेल",
+                                                                                                                      "children": [
+                                                                                                                        {
+                                                                                                                          "name": "शदु पौडेल",
+                                                                                                                          "children": [
+                                                                                                                            {
+                                                                                                                              "name": "शंकर पौडेल",
+                                                                                                                              "children": [
+                                                                                                                                {
+                                                                                                                                  "name": "गृहपति पौडेल",
+                                                                                                                                  "children": [
+                                                                                                                                    {
+                                                                                                                                      "name": "रुद्रपति पौडेल",
+                                                                                                                                      "children": [
+                                                                                                                                        {
+                                                                                                                                          "name": "लक्ष्मीनारायण पौडेल",
+                                                                                                                                          "children": [
+                                                                                                                                            {
+                                                                                                                                              "name": "राधाकृष्ण पौडेल",
+                                                                                                                                              "children": [
+                                                                                                                                                {
+                                                                                                                                                  "name": "काशिराम पौडेल",
+                                                                                                                                                  "children": [
+                                                                                                                                                    {
+                                                                                                                                                      "name": "शक्तु पौडेल",
+                                                                                                                                                      "children": [
+                                                                                                                                                        {
+                                                                                                                                                          "name": "सुवर्ण पौडेल",
+                                                                                                                                                          "children": [
+                                                                                                                                                            {
+                                                                                                                                                              "name": "राम जैषी( ज्योतिषी ) ‍– ४२ औँ पुस्ता (उदयदेव भट्टका २९ औँ पुस्ता हुँदा)",
+                                                                                                                                                              "children": [
+                                                                                                                                                                {
+                                                                                                                                                                  "name": "(क) रवि प्रसाद पौडेल (ख)( रतन पारी गॅाउले )",
+                                                                                                                                                                  "children": [
+                                                                                                                                                                    {
+                                                                                                                                                                      "name": "(क)नामखर पौडेल (ख) कल्याण पाख्रीवोटे",
+                                                                                                                                                                      "children": [
+                                                                                                                                                                        {
+                                                                                                                                                                          "name": "धौलु ज्योतिषी",
+                                                                                                                                                                          "children": [
+                                                                                                                                                                            {
+                                                                                                                                                                              "name": "शिरै शिरै ज्योतिषी – धरमदास (झारखोले) ४६ औँ पुस्ता",
+                                                                                                                                                                              "children": [
+                                                                                                                                                                                {
+                                                                                                                                                                                  "name": "योगु/जोगु पौडेल",
+                                                                                                                                                                                  "children": [
+                                                                                                                                                                                    {
+                                                                                                                                                                                      "name": "स्वर्ण पौडेल",
+                                                                                                                                                                                      "children": [
+                                                                                                                                                                                        {
+                                                                                                                                                                                          "name": "गोपाल पौडेल",
+                                                                                                                                                                                          "children": []
+                                                                                                                                                                                        },
+                                                                                                                                                                                        {
+                                                                                                                                                                                          "name": "लक्ष्मीपति (४७)",
+                                                                                                                                                                                          "children": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                              "name": "रत्नाखर (४८)",
+                                                                                                                                                                                              "children": [
+                                                                                                                                                                                                {
+                                                                                                                                                                                                  "name": "जयमङ्गल (४९)",
+                                                                                                                                                                                                  "children": [
+                                                                                                                                                                                                    {
+                                                                                                                                                                                                      "name": "शुकदेव (५०)",
+                                                                                                                                                                                                      "children": [
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                          "name": "महिषु (५१)",
+                                                                                                                                                                                                          "children": [
+                                                                                                                                                                                                            {
+                                                                                                                                                                                                              "name": "ऋषिराम/लेखको हाँगो",
+                                                                                                                                                                                                              "children": []
+                                                                                                                                                                                                            }
+                                                                                                                                                                                                          ]
+                                                                                                                                                                                                        }
+                                                                                                                                                                                                      ]
+                                                                                                                                                                                                    },
+                                                                                                                                                                                                    {
+                                                                                                                                                                                                      "name": "शिवलाल (५१)",
+                                                                                                                                                                                                      "children": [
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                          "name": "डिल्लीराम (५२)",
+                                                                                                                                                                                                          "children": [
+                                                                                                                                                                                                            {
+                                                                                                                                                                                                              "name": "तुलसीराम (५३)",
+                                                                                                                                                                                                              "children": [
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                  "name": "डिल्लीराम (५४)",
+                                                                                                                                                                                                                  "children": [
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                      "name": "ज्ञानु (५५)",
+                                                                                                                                                                                                                      "children": []
+                                                                                                                                                                                                                    },
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                      "name": "रज्ञा/",
+                                                                                                                                                                                                                      "children": []
+                                                                                                                                                                                                                    },
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                      "name": "लक्ष्मी/सरस्वती",
+                                                                                                                                                                                                                      "children": []
+                                                                                                                                                                                                                    },
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                      "name": "सन्तोष (५५)",
+                                                                                                                                                                                                                      "children": []
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                  ]
+                                                                                                                                                                                                                },
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                  "name": "तिलक (५४)",
+                                                                                                                                                                                                                  "children": [
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                      "name": "रोशन (५५)",
+                                                                                                                                                                                                                      "children": [
+                                                                                                                                                                                                                        {
+                                                                                                                                                                                                                          "name": "सेज/आइभी",
+                                                                                                                                                                                                                          "children": []
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                      ]
+                                                                                                                                                                                                                    },
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                      "name": "रश्मी",
+                                                                                                                                                                                                                      "children": []
+                                                                                                                                                                                                                    },
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                      "name": "रञ्जन (५५)",
+                                                                                                                                                                                                                      "children": []
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                  ]
+                                                                                                                                                                                                                },
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                  "name": "स्व. पङ्खा",
+                                                                                                                                                                                                                  "children": []
+                                                                                                                                                                                                                },
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                  "name": "दुर्गा",
+                                                                                                                                                                                                                  "children": []
+                                                                                                                                                                                                                },
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                  "name": "स्व. लक्ष्मी",
+                                                                                                                                                                                                                  "children": []
+                                                                                                                                                                                                                },
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                  "name": "पार्वती",
+                                                                                                                                                                                                                  "children": []
+                                                                                                                                                                                                                },
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                  "name": "ज्ञानेन्द्र (५४)",
+                                                                                                                                                                                                                  "children": [
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                      "name": "दीक्षा/सुदीक्षा",
+                                                                                                                                                                                                                      "children": []
+                                                                                                                                                                                                                    },
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                      "name": "सक्षम (५५)",
+                                                                                                                                                                                                                      "children": []
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                  ]
+                                                                                                                                                                                                                }
+                                                                                                                                                                                                              ]
+                                                                                                                                                                                                            }
+                                                                                                                                                                                                          ]
+                                                                                                                                                                                                        }
+                                                                                                                                                                                                      ]
+                                                                                                                                                                                                    },
+                                                                                                                                                                                                    {
+                                                                                                                                                                                                      "name": "बलदेव (५०)",
+                                                                                                                                                                                                      "children": []
+                                                                                                                                                                                                    },
+                                                                                                                                                                                                    {
+                                                                                                                                                                                                      "name": "व्यासदेव (५०)",
+                                                                                                                                                                                                      "children": []
+                                                                                                                                                                                                    }
+                                                                                                                                                                                                  ]
+                                                                                                                                                                                                },
+                                                                                                                                                                                                {
+                                                                                                                                                                                                  "name": "कालुराम (४८)",
+                                                                                                                                                                                                  "children": []
+                                                                                                                                                                                                },
+                                                                                                                                                                                                {
+                                                                                                                                                                                                  "name": "चतुराखर (४८)",
+                                                                                                                                                                                                  "children": []
+                                                                                                                                                                                                },
+                                                                                                                                                                                                {
+                                                                                                                                                                                                  "name": "कमलापति (४८)",
+                                                                                                                                                                                                  "children": []
+                                                                                                                                                                                                }
+                                                                                                                                                                                              ]
+                                                                                                                                                                                            },
+                                                                                                                                                                                            {
+                                                                                                                                                                                              "name": "विद्यापति पौडेल",
+                                                                                                                                                                                              "children": [
+                                                                                                                                                                                                {
+                                                                                                                                                                                                  "name": "लक्ष्मीनारायण पौडेल",
+                                                                                                                                                                                                  "children": [
+                                                                                                                                                                                                    {
+                                                                                                                                                                                                      "name": "नारायण पौडेल",
+                                                                                                                                                                                                      "children": [
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                          "name": "नन्दु पौडेल",
+                                                                                                                                                                                                          "children": [
+                                                                                                                                                                                                            {
+                                                                                                                                                                                                              "name": "पं. बलभद्र पौडेल पत्नी….. रेग्मी ( ढाडे पवौगौडे)",
+                                                                                                                                                                                                              "children": [
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                  "name": "पं. देवदत्त पौडेल पत्नी …. लम",
+                                                                                                                                                                                                                  "children": []
+                                                                                                                                                                                                                }
+                                                                                                                                                                                                              ]
+                                                                                                                                                                                                            }
+                                                                                                                                                                                                          ]
+                                                                                                                                                                                                        }
+                                                                                                                                                                                                      ]
+                                                                                                                                                                                                    }
+                                                                                                                                                                                                  ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                              ]
+                                                                                                                                                                                            }
+                                                                                                                                                                                          ]
+                                                                                                                                                                                        }
+                                                                                                                                                                                      ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                  ]
+                                                                                                                                                                                }
+                                                                                                                                                                              ]
+                                                                                                                                                                            }
+                                                                                                                                                                          ]
+                                                                                                                                                                        }
+                                                                                                                                                                      ]
+                                                                                                                                                                    }
+                                                                                                                                                                  ]
+                                                                                                                                                                }
+                                                                                                                                                              ]
+                                                                                                                                                            }
+                                                                                                                                                          ]
+                                                                                                                                                        }
+                                                                                                                                                      ]
+                                                                                                                                                    }
+                                                                                                                                                  ]
+                                                                                                                                                }
+                                                                                                                                              ]
+                                                                                                                                            }
+                                                                                                                                          ]
+                                                                                                                                        }
+                                                                                                                                      ]
+                                                                                                                                    }
+                                                                                                                                  ]
+                                                                                                                                }
+                                                                                                                              ]
+                                                                                                                            }
+                                                                                                                          ]
+                                                                                                                        }
+                                                                                                                      ]
+                                                                                                                    }
+                                                                                                                  ]
+                                                                                                                }
+                                                                                                              ]
+                                                                                                            }
+                                                                                                          ]
+                                                                                                        }
+                                                                                                      ]
+                                                                                                    }
+                                                                                                  ]
+                                                                                                }
+                                                                                              ]
+                                                                                            }
+                                                                                          ]
+                                                                                        }
+                                                                                      ]
+                                                                                    }
+                                                                                  ]
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+
+
+           };
+
+// ======================
+// SVG Setup
+// ======================
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+const svg = d3.select("#tree")
+  .attr("width", width)
+  .attr("height", height);
+
+const g = svg.append("g");
+
+// Zoom & Pan
+svg.call(d3.zoom()
+  .scaleExtent([0.2, 3])
+  .on("zoom", (event) => g.attr("transform", event.transform))
+);
+
+// ======================
+// Tree Layout
+// ======================
+const root = d3.hierarchy(data);
+root.x0 = height / 2;
+root.y0 = 0;
+
+// Collapse all children initially
+// root.children.forEach(collapse); // comment this to do not collapse at begining
+
+function collapse(d) {
+  if(d.children) {
+    d._children = d.children;
+    d._children.forEach(collapse);
+    d.children = null;
+  }
+}
+
+const treeLayout = d3.tree()
+  .nodeSize([150, 50]); // [horizontal spacing, vertical spacing]
+
+// ======================
+// Update Function
+// ======================
+function update(source) {
+  const treeData = treeLayout(root);
+
+  const nodes = treeData.descendants();
+  const links = treeData.links();
+
+  // Normalize for fixed depth
+  nodes.forEach(d => { d.y = d.depth * 100; });
+
+  // ------------------
+  // Links
+  // ------------------
+  const link = g.selectAll(".link")
+    .data(links, d => d.target.data.name);
+
+  link.enter()
+    .append("path")
+    .attr("class", "link")
+    .merge(link)
+    .attr("d", d3.linkVertical()
+      .x(d => d.x)
+      .y(d => d.y)
+    );
+
+  link.exit().remove();
+
+  // ------------------
+  // Nodes
+  // ------------------
+  const node = g.selectAll("g.node")
+    .data(nodes, d => d.data.name);
+
+  const nodeEnter = node.enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", d => `translate(${source.x0},${source.y0})`)
+    .on("click", (event, d) => {
+      // toggle children
+      if(d.children) {
+        d._children = d.children;
+        d.children = null;
+      } else {
+        d.children = d._children;
+        d._children = null;
+      }
+      update(d);
+    });
+
+  // Node rectangle
+  nodeEnter.append("rect")
+    .attr("class", "node-box")
+    .attr("x", -50)
+    .attr("y", -15)
+    .attr("width", 100)
+    .attr("height", 30);
+
+  // Node text
+  nodeEnter.append("text")
+    .attr("class", "node-text")
+    .attr("text-anchor", "middle")
+    .attr("dy", 5)
+    .text(d => d.data.name);
+
+  // Transition nodes to their new position
+  const nodeUpdate = nodeEnter.merge(node);
+  nodeUpdate.transition()
+    .duration(300)
+    .attr("transform", d => `translate(${d.x},${d.y})`);
+
+  node.exit().remove();
+
+  // Save old positions for transitions
+  nodes.forEach(d => {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+// ======================
+// Initial Draw
+// ======================
+update(root);
+
+</script>
+
+</body>
+</html>
